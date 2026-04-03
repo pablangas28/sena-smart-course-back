@@ -23,7 +23,7 @@ class FormularioInscripcionController extends Controller
 
         return response()->json([
             'formulario' => $formulario,
-            'link'       => url("/api/inscripcion/{$formulario->token}"),
+            'link' => config('app.url') . "/api/inscripcion/{$formulario->token}",
         ], 201);
     }
 
