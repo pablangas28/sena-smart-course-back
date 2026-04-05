@@ -47,6 +47,22 @@ class PruebaSeeder extends Seeder
             ]
         );
 
+        // Crear al estudiante
+        $estudiante = User::firstOrCreate(
+            ['email' => 'juan@ena.edu.co'],
+            [
+                'nombre'      => 'Juan',
+                'apellidos'   => 'Perez',
+                'email'       => 'juan@sena.edu.co',
+                'password'    => Hash::make('Sena2025*'),
+                'rol'         => 'estudiante',
+                'telefono'    => '3104276345',
+                'ocupacion'   => 'Aprendiz',
+                'regional_id' => $regional->id,
+                'activo'      => true,
+            ]
+        );
+
         // Crear curso de prueba
         $curso = Curso::firstOrCreate(
             ['nombre' => 'Docencia Universitaria'],
@@ -61,6 +77,7 @@ class PruebaSeeder extends Seeder
                 'estado'           => 'activo',
             ]
         );
+
 
         $this->command->info('✅ Instructor creado: instructor@sena.edu.co');
         $this->command->info('✅ Aliado creado: aliado@sena.edu.co');
