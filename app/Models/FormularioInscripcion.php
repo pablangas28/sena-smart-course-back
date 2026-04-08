@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class FormularioInscripcion extends Model
 {
     protected $table = 'formularios_inscripcion';
-    
+
     protected $fillable = [
         'curso_id',
         'creado_por',
