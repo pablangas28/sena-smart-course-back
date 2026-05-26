@@ -62,10 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | CURSOS (LECTURA)
+    | CURSOS Y CLASES (LECTURA PARA TODOS, INCLUYENDO ESTUDIANTE)
     |--------------------------------------------------------------------------
     */
-    Route::middleware('role:coordinador,instructor,aliado')->group(function () {
+    Route::middleware('role:coordinador,instructor,aliado,estudiante')->group(function () {
 
         Route::get('/cursos', [CursoController::class, 'index']);
         Route::get('/cursos/{curso}', [CursoController::class, 'show']);
@@ -74,16 +74,25 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/cursos/{curso}/clases', [ClaseController::class, 'index']);
         Route::get('/cursos/{curso}/clases/{clase}', [ClaseController::class, 'show']);
 
+        // Asistencias y Calificaciones
+        Route::get('/cursos/{curso_id}/estudiantes/{estudiante_id}/asistencia', [AsistenciaController::class, 'porEstudiante']);
+        Route::get('/clases/{clase}/asistencia', [AsistenciaController::class, 'index']);
+        
+        Route::get('/cursos/{curso_id}/estudiantes/{estudiante_id}/calificaciones', [CalificacionController::class, 'promedioPorEstudiante']);
+        Route::get('/clases/{clase}/calificaciones', [CalificacionController::class, 'index']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ESTUDIANTES Y METRICAS (LECTURA - SIN ESTUDIANTE)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:coordinador,instructor,aliado')->group(function () {
+
         // Estudiantes
         Route::get('/cursos/{curso_id}/estudiantes', [RegistroEstudianteController::class, 'index']);
         Route::get('/estudiantes/{registroEstudiante}', [RegistroEstudianteController::class, 'show']);
 
-        Route::get('/cursos/{curso_id}/estudiantes/{estudiante_id}/asistencia', [AsistenciaController::class, 'porEstudiante']);
-        Route::get('/cursos/{curso_id}/estudiantes/{estudiante_id}/calificaciones', [CalificacionController::class, 'promedioPorEstudiante']);
-
-        // Asistencia y calificaciones
-        Route::get('/clases/{clase}/asistencia', [AsistenciaController::class, 'index']);
-        Route::get('/clases/{clase}/calificaciones', [CalificacionController::class, 'index']);
     });
 
     /*

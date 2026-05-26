@@ -35,8 +35,12 @@ class AsistenciaController extends Controller
     }
 
     // Ver asistencia de una clase
-    public function index(Clase $clase)
+    public function index(Request $request, Clase $clase)
     {
+        if (!$request->user()->puedeVerCurso($clase->curso)) {
+            return response()->json(['message' => 'No tienes permiso para ver estas asistencias.'], 403);
+        }
+
         $asistencias = $clase->asistencias()->with('estudiante')->get();
 
         return response()->json($asistencias);
@@ -45,6 +49,11 @@ class AsistenciaController extends Controller
     // Ver asistencia de un estudiante en un curso completo
     public function porEstudiante(Request $request, $curso_id, $estudiante_id)
     {
+        $curso = \App\Models\Curso::findOrFail($curso_id);
+        if (!$request->user()->puedeVerCurso($curso)) {
+            return response()->json(['message' => 'No tienes permiso para ver estas asistencias.'], 403);
+        }
+
         $asistencias = Asistencia::whereHas('clase', fn($q) => $q->where('curso_id', $curso_id))
             ->where('estudiante_id', $estudiante_id)
             ->with('clase')

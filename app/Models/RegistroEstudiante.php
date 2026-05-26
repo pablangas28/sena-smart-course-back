@@ -15,7 +15,7 @@ class RegistroEstudiante extends Model
         'genero',
         'telefono',
         'celular',
-        'tel_contacto_emergencia',
+        'documento',
         'cel_contacto_emergencia',
         'pantallazo_sofia',
         'estado',

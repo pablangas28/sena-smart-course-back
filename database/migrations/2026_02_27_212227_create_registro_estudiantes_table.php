@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->enum('genero', ['masculino', 'femenino', 'otro']);
             $table->string('telefono')->nullable();
             $table->string('celular');
-            $table->string('tel_contacto_emergencia')->nullable();
+            $table->string('documento');
             $table->string('cel_contacto_emergencia');
             $table->string('pantallazo_sofia')->nullable(); // ruta del archivo subido
             // Estados: activo, desertado, graduado

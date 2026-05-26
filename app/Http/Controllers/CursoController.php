@@ -12,7 +12,15 @@ class CursoController extends Controller
         $user = $request->user();
 
         $cursos = Curso::with(['regional', 'creadoPor'])
-            ->when(!$user->esCoordinador(), fn($q) => $q->where('creado_por', $user->id))
+            ->when(!$user->esCoordinador(), function ($q) use ($user) {
+                if ($user->esEstudiante()) {
+                    $q->whereHas('estudiantes', function ($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    });
+                } else {
+                    $q->where('creado_por', $user->id);
+                }
+            })
             ->when($request->estado, fn($q) => $q->where('estado', $request->estado))
             ->get();
 
@@ -43,11 +51,20 @@ class CursoController extends Controller
         return response()->json($curso, 201);
     }
 
-    public function show(Curso $curso)
+    public function show(Request $request, Curso $curso)
     {
-        return response()->json($curso->load([
-            'regional', 'creadoPor', 'clases', 'estudiantes'
-        ]));
+        $user = $request->user();
+
+        if (!$user->puedeVerCurso($curso)) {
+            return response()->json(['message' => 'No tienes permiso para ver este curso.'], 403);
+        }
+
+        $relations = ['regional', 'creadoPor', 'clases'];
+        if (!$user->esEstudiante()) {
+            $relations[] = 'estudiantes';
+        }
+
+        return response()->json($curso->load($relations));
     }
 
     public function update(Request $request, Curso $curso)

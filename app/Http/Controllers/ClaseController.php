@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 
 class ClaseController extends Controller
 {
-    public function index(Curso $curso)
+    public function index(Request $request, Curso $curso)
     {
+        if (!$request->user()->puedeVerCurso($curso)) {
+            return response()->json(['message' => 'No tienes permiso.'], 403);
+        }
         return response()->json($curso->clases()->orderBy('fecha_hora')->get());
     }
 
@@ -37,9 +40,18 @@ class ClaseController extends Controller
         return response()->json($clase, 201);
     }
 
-    public function show(Curso $curso, Clase $clase)
+    public function show(Request $request, Curso $curso, Clase $clase)
     {
-        return response()->json($clase->load(['asistencias', 'calificaciones']));
+        if (!$request->user()->puedeVerCurso($curso)) {
+            return response()->json(['message' => 'No tienes permiso.'], 403);
+        }
+
+        $relations = [];
+        if (!$request->user()->esEstudiante()) {
+            $relations = ['asistencias', 'calificaciones'];
+        }
+
+        return response()->json($clase->load($relations));
     }
 
     public function update(Request $request, Curso $curso, Clase $clase)

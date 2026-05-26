@@ -82,4 +82,13 @@ class User extends Authenticatable
     {
         return $this->rol === 'estudiante';
     }
+
+    public function puedeVerCurso(Curso $curso): bool
+    {
+        if ($this->esCoordinador()) return true;
+        if ($this->esEstudiante()) {
+            return $curso->estudiantes()->where('user_id', $this->id)->exists();
+        }
+        return $curso->creado_por === $this->id;
+    }
 }

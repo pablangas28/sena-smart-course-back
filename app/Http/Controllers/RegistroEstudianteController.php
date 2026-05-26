@@ -29,7 +29,7 @@ class RegistroEstudianteController extends Controller
             'celular'                 => 'required|string|max:20',
             'telefono'                => 'nullable|string|max:20',
             'cel_contacto_emergencia' => 'required|string|max:20',
-            'tel_contacto_emergencia' => 'nullable|string|max:20',
+            'documento'               => 'required|string|max:20',
             'pantallazo_sofia'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
@@ -60,7 +60,7 @@ class RegistroEstudianteController extends Controller
             'celular'                 => $request->celular,
             'telefono'                => $request->telefono,
             'cel_contacto_emergencia' => $request->cel_contacto_emergencia,
-            'tel_contacto_emergencia' => $request->tel_contacto_emergencia,
+            'documento'               => $request->documento,
             'pantallazo_sofia'        => $rutaSofia,
         ]);
 

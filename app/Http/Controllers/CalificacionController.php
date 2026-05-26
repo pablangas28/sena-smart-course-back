@@ -37,14 +37,23 @@ class CalificacionController extends Controller
     }
 
     // Ver calificaciones de una clase
-    public function index(Clase $clase)
+    public function index(Request $request, Clase $clase)
     {
+        if (!$request->user()->puedeVerCurso($clase->curso)) {
+            return response()->json(['message' => 'No tienes permiso para ver estas calificaciones.'], 403);
+        }
+
         return response()->json($clase->calificaciones()->with('estudiante')->get());
     }
 
     // Promedio final de un estudiante en un curso
-    public function promedioPorEstudiante($curso_id, $estudiante_id)
+    public function promedioPorEstudiante(Request $request, $curso_id, $estudiante_id)
     {
+        $curso = \App\Models\Curso::findOrFail($curso_id);
+        if (!$request->user()->puedeVerCurso($curso)) {
+            return response()->json(['message' => 'No tienes permiso para ver estas calificaciones.'], 403);
+        }
+
         $calificaciones = Calificacion::whereHas('clase', fn($q) => $q->where('curso_id', $curso_id))
             ->where('estudiante_id', $estudiante_id)
             ->get();
